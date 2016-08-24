@@ -8,11 +8,12 @@ using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 
-namespace Hello_World
+namespace SampleBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        DataAccess DO = new DataAccess();
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
@@ -24,9 +25,10 @@ namespace Hello_World
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 // calculate something for us to return
                 int length = (activity.Text ?? string.Empty).Length;
-
+                string queryResponse = DO.queryError(activity.Text);
                 // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                String activityresp = "You Queried for " + activity.Text + "." + Environment.NewLine + "Response is " + queryResponse;
+                Activity reply = activity.CreateReply(activityresp);
                 await connector.Conversations.ReplyToActivityAsync(reply);
             }
             else
